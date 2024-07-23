@@ -6,7 +6,8 @@ using Xunit.Abstractions;
 
 namespace JornadaMilhas.Test.Integracao.OfertaViagemDal;
 
-public class Adicionar : IClassFixture<ContextFixture>, IDisposable
+[Collection(nameof(ContextCollection))]
+public class Adicionar : IDisposable
 {
     private readonly JornadaMilhasContext _context;
     private readonly IDbContextTransaction _transaction;
