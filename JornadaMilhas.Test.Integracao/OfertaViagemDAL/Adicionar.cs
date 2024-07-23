@@ -1,22 +1,25 @@
 ﻿using JornadaMilhas.Dados;
+using JornadaMilhas.Test.Integracao.Fixtures;
 using JornadaMilhasV1.Modelos;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Xunit.Abstractions;
 
 namespace JornadaMilhas.Test.Integracao.OfertaViagemDal;
 
-public class Adicionar
+public class Adicionar : IClassFixture<ContextFixture>, IDisposable
 {
     private readonly JornadaMilhasContext _context;
+    private readonly IDbContextTransaction _transaction;
 
-    public Adicionar()
+    public Adicionar(ITestOutputHelper output, ContextFixture fixture)
     {
-        var options = new DbContextOptionsBuilder<JornadaMilhasContext>()
-            .UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=JornadaMilhas;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False")
-            .Options;
+        _context = fixture.Context;
 
-        _context = new JornadaMilhasContext(options);
+        output.WriteLine(_context.GetHashCode().ToString());
 
+        _transaction = _context.Database.BeginTransaction();
     }
+
     [Fact]
     public void RegistersOfferInDatabaseIfOfferIsValid()
     {
@@ -46,5 +49,11 @@ public class Adicionar
         Assert.Equal(initialDate, includedOffer.Periodo.DataInicial);
         Assert.Equal(finalDate, includedOffer.Periodo.DataFinal);
         Assert.Equal(price, includedOffer.Preco);
+    }
+
+    public void Dispose()
+    {
+        _transaction.Rollback();
+        _transaction.Dispose();
     }
 }
