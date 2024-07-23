@@ -1,10 +1,22 @@
 ﻿using JornadaMilhas.Dados;
 using JornadaMilhasV1.Modelos;
+using Microsoft.EntityFrameworkCore;
 
 namespace JornadaMilhas.Test.Integracao.OfertaViagemDal;
 
 public class Adicionar
 {
+    private readonly JornadaMilhasContext _context;
+
+    public Adicionar()
+    {
+        var options = new DbContextOptionsBuilder<JornadaMilhasContext>()
+            .UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=JornadaMilhas;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False")
+            .Options;
+
+        _context = new JornadaMilhasContext(options);
+
+    }
     [Fact]
     public void RegistersOfferInDatabaseIfOfferIsValid()
     {

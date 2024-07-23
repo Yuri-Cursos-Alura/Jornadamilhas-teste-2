@@ -1,19 +1,13 @@
 ﻿using JornadaMilhasV1.Modelos;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JornadaMilhas.Dados;
 public class OfertaViagemDAL
 {
     private readonly JornadaMilhasContext context;
 
-    public OfertaViagemDAL()
+    public OfertaViagemDAL(JornadaMilhasContext context)
     {
-        context = new JornadaMilhasContext();
+        this.context = context;
     }
 
     public void Adicionar(OfertaViagem oferta)
