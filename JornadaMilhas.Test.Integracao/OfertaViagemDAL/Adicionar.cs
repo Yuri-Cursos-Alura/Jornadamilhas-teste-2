@@ -21,12 +21,17 @@ public class Adicionar
     public void RegistersOfferInDatabaseIfOfferIsValid()
     {
         // Arrange
-        var route = new Rota("Irrelevant", "Irrelevant");
-        var period = new Periodo(DateTime.Now, DateTime.Now);
+        var originRoute = "Origin";
+        var destinationRoute = "Desination";
+        var initialDate = DateTime.Now;
+        var finalDate = DateTime.Now.AddDays(30);
+
+        var route = new Rota(originRoute, destinationRoute);
+        var period = new Periodo(initialDate, finalDate);
         double price = 350.0;
 
         var offer = new OfertaViagem(route, period, price);
-        var dal = new OfertaViagemDAL();
+        var dal = new OfertaViagemDAL(_context);
 
         // Act
         dal.Adicionar(offer);
@@ -36,5 +41,10 @@ public class Adicionar
 
         Assert.NotNull(includedOffer);
         Assert.Same(offer, includedOffer);
+        Assert.Equal(originRoute, includedOffer.Rota.Origem);
+        Assert.Equal(destinationRoute, includedOffer.Rota.Destino);
+        Assert.Equal(initialDate, includedOffer.Periodo.DataInicial);
+        Assert.Equal(finalDate, includedOffer.Periodo.DataFinal);
+        Assert.Equal(price, includedOffer.Preco);
     }
 }
