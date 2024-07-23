@@ -34,7 +34,7 @@ public class Adicionar : IClassFixture<ContextFixture>, IDisposable
         double price = 350.0;
 
         var offer = new OfertaViagem(route, period, price);
-        var dal = new OfertaViagemDAL(_context);
+        var dal = new Dados.OfertaViagemDAL(_context);
 
         // Act
         dal.Adicionar(offer);
