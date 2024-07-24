@@ -1,18 +1,29 @@
 ﻿using JornadaMilhas.Dados;
 using Microsoft.EntityFrameworkCore;
+using Testcontainers.MsSql;
 
 namespace JornadaMilhas.Test.Integracao.Fixtures;
 
-public class ContextFixture
+public class ContextFixture : IAsyncLifetime
 {
-    public JornadaMilhasContext Context { get; }
+    public JornadaMilhasContext Context { get; private set; }
+    private readonly MsSqlContainer _msSQlContainer = new MsSqlBuilder()
+        .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+        .Build();
 
-    public ContextFixture()
+    public async Task InitializeAsync()
     {
+        await _msSQlContainer.StartAsync();
         var options = new DbContextOptionsBuilder<JornadaMilhasContext>()
-            .UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=JornadaMilhas;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False")
+            .UseSqlServer(_msSQlContainer.GetConnectionString())
             .Options;
 
         Context = new JornadaMilhasContext(options);
+        Context.Database.Migrate();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _msSQlContainer.StopAsync();
     }
 }
