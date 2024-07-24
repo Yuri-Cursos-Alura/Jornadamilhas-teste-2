@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using JornadaMilhas.Dados;
+using JornadaMilhas.Test.Integracao.Fakers;
 using JornadaMilhas.Test.Integracao.Fixtures;
 using JornadaMilhasV1.Modelos;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -30,7 +31,7 @@ public class RecuperaMaiorDesconto : IDisposable
         //arrange
         Fixture.CreateFakeData();
         var rota = new Rota("Curitiba", "São Paulo");
-        var periodo = new Periodo(DateTime.Now, DateTime.Now.AddDays(30));
+        var periodo = new PeriodDataBuilder() { InitialDate = DateTime.Now }.Build();
 
         var ofertaEscolhida = new OfertaViagem(rota, periodo, 80)
         {
