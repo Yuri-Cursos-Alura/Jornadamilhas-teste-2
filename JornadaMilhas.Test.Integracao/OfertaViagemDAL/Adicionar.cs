@@ -12,11 +12,9 @@ public class Adicionar : IDisposable
     private readonly JornadaMilhasContext _context;
     private readonly IDbContextTransaction _transaction;
 
-    public Adicionar(ITestOutputHelper output, ContextFixture fixture)
+    public Adicionar(ContextFixture fixture)
     {
         _context = fixture.Context;
-
-        output.WriteLine(_context.GetHashCode().ToString());
 
         _transaction = _context.Database.BeginTransaction();
     }
