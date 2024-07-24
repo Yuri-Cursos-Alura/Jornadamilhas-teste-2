@@ -13,7 +13,7 @@ public class RecuperaMaiorDesconto : IDisposable
     private readonly JornadaMilhasContext _context;
     private readonly IDbContextTransaction _transaction;
 
-    public RecuperaMaiorDesconto(ITestOutputHelper output, ContextFixture fixture)
+    public RecuperaMaiorDesconto(ContextFixture fixture)
     {
         _context = fixture.Context;
 
