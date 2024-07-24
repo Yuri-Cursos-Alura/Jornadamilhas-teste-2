@@ -19,7 +19,6 @@ public class RecuperaMaiorDesconto : IDisposable
     public RecuperaMaiorDesconto(ContextFixture fixture)
     {
         _context = fixture.Context;
-
         _transaction = _context.Database.BeginTransaction();
         Fixture = fixture;
     }
@@ -44,6 +43,34 @@ public class RecuperaMaiorDesconto : IDisposable
 
         Func<OfertaViagem, bool> filtro = o => o.Rota.Destino.Equals("São Paulo");
         var precoEsperado = 40;
+
+        //act
+        var oferta = dal.RecuperaMaiorDesconto(filtro);
+
+        //assert
+        Assert.NotNull(oferta);
+        Assert.Equal(precoEsperado, oferta.Preco, 0.0001);
+    }
+
+    [Fact]
+    public void RetornaOfertaEspecificaQuandoDestinoSaoPauloEDesconto60()
+    {
+        //arrange
+        Fixture.CreateFakeData();
+        var rota = new Rota("Curitiba", "São Paulo");
+        var periodo = new PeriodDataBuilder() { InitialDate = DateTime.Now }.Build();
+
+        var ofertaEscolhida = new OfertaViagem(rota, periodo, 80)
+        {
+            Desconto = 60,
+            Ativa = true
+        };
+
+        var dal = new Dados.OfertaViagemDAL(_context);
+        dal.Adicionar(ofertaEscolhida);
+
+        Func<OfertaViagem, bool> filtro = o => o.Rota.Destino.Equals("São Paulo");
+        var precoEsperado = 20;
 
         //act
         var oferta = dal.RecuperaMaiorDesconto(filtro);
